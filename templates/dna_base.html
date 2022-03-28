@@ -1,0 +1,79 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>iTaxoTools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/static/css1/custom.css">
+</head>
+
+<title>
+    {% block title %}
+
+    {% endblock %}
+</title>
+</head>
+
+
+<header>
+  <div class="container">
+   <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark bg-primary">
+
+           <a class="navbar-brand">
+               <img src="{{ url_for('static', filename='images/iTaxoTools Digital linneaeus MICROLOGO.png') }}"  width="80" height="60" class="d-inline-block align-top"
+                   alt="">
+                iTaxotools
+
+
+
+  {% if extra %}
+
+  <a class="nav-link" href="{{ url_for('main.home1') }}">
+    <span class="glyphicon glyphicon-home">
+    </span> iTaxatools apps</a>
+
+      <a class="nav-link px-lg-5" href="{{ url_for('dna.check') }}">
+        <span class="glyphicon glyphicon-home">
+        </span> DNAconverter </a>
+
+
+      <a class="nav-link px-lg-5" href= "{{ down }}" download="{{ filen }}">
+<span class="glyphicon glyphicon-download-alt">
+</span> result file </a>
+
+
+
+
+        {% else %}
+
+        <a class="nav-link px-lg-5" href="{{ url_for('main.home1') }}">
+          <span class="glyphicon glyphicon-home">
+          </span> iTaxatools    </a>
+
+            <a class="nav-link px-lg-5" href="{{ url_for('dna.check') }}">
+              <span class="glyphicon glyphicon-home"></span> DNAconverter
+            </a>
+
+
+
+      {% endif %}
+
+
+
+</nav>
+  </div>
+</header>
+<body>
+{% block content %}
+
+{% endblock %}
+
+</body>
+</html>

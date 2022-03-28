@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>SpartMapper Project</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        {# MEDIUM STYLE EDITOR#}
+        <script src="//cdn.jsdelivr.net/medium-editor/latest/js/medium-editor.min.js"></script>
+
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/medium-editor/latest/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">
+
+
+        {# Fonts#}
+        <link href="https://fonts.googleapis.com/css?family=Montserrat|Russo+One" rel="stylesheet">
+
+
+        <link rel="stylesheet" href="/static/css1/custom.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+
+</head>
+<title>
+    {% block title %}
+
+    {% endblock %}
+</title>
+<header>
+  <div class="container">
+   <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark bg-primary nav nav-pills"">
+
+           <a class="navbar-brand">
+               <img src="{{ url_for('static', filename='images/iTaxoTools Digital linneaeus MICROLOGO.png') }}" width="80" height="60" class="d-inline-block align-top"
+                   alt="">
+                iTaxotools
+
+
+  {% if extra %}
+
+  <ul class="nav nav-pills">
+
+    <li class="nav-item">
+
+    <a class="nav-link" href="{{ url_for('main.home1') }}">
+      <span class="glyphicon glyphicon-home">
+      </span> iTaxatools apps</a>
+
+      </li>
+
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url_for('blog.check') }}"><span class="glyphicon glyphicon-home">
+      </span> SpartMapper </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link px-lg-5" href= "{{ up1 }}" download="{{ filen1 }}">
+<span class="glyphicon glyphicon-download-alt">
+</span> Download kml </a>
+
+  </li>
+  <li class="nav-item">
+    <a class="nav-link px-lg-5" href= "{{ up2 }}" download="{{ filen2 }}">
+<span class="glyphicon glyphicon-download-alt">
+</span> Download html </a>
+
+  </li>
+</ul>
+
+
+        {% else %}
+
+        <ul class="nav nav-pills">
+        <li class="nav-item">
+
+          <a class="nav-link" href="{{ url_for('main.home1') }}">
+            <span class="glyphicon glyphicon-home">
+            </span> iTaxatools</a>
+  </li>
+
+  <li class="nav-item">
+
+          <a class="nav-link" href="{{ url_for('blog.check') }}"><span class="glyphicon glyphicon-home">
+            </span> SpartMapper </a>
+        </li>
+        </ul>
+
+      {% endif %}
+    </nav>
+      </div>
+
+    </header>
+    <body>
+    {% block content %}
+
+    {% endblock %}
+
+
+<script type="text/javascript" src="url_for('static', filename='js/analytics.js')"</script>
+
+
+</body>
+</html>

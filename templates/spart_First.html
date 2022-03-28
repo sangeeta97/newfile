@@ -1,0 +1,141 @@
+{% extends "spart_base.html" %}
+{% block content %}
+
+<br>
+<br>
+<div class="container">
+
+<h4>(1). Import your specimen distributions data-set</h4>
+
+
+<h4>Please either Import your specimen distributions data-set, find example file below</h4>
+<p> please upload a tab file having columns the order of specimen_voucher	latitude longitude (See the example file below)</p>
+<p> please upload a spart text file (optional). SPART file assigns different colours to each of the inferred species.</p>
+
+
+<h4>(2) Or please paste tab separated latitude and longitude values (in the order latitude tab longitude), find example data below</h4>
+<br>
+<div class="container">
+<form method = "POST" action="{{ url_for('blog.check') }}">
+
+<label class="custom-control-label" for="customRadio1">Choose to paste Data</label>
+<br>
+<input type="submit" class="btn btn-primary" name="customRadio" value="paste" />
+<br>
+<br>
+<label class="custom-control-label" for="customRadio2">Choose to upload Data</label>
+<br>
+<input type="submit" class="btn btn-primary" name="customRadio" value="upload" />
+
+<br>
+</form>
+</div>
+
+
+{% if status %}
+<div class="container">
+
+  <h6>please paste sequence data</h6>
+
+  <form method="post" enctype=multipart/form-data action="{{ url_for('blog.paste') }}">
+
+          <label for="content">sequence data</label>
+          <br>
+          <textarea name="content"
+                    placeholder="sequence data"
+                    rows="15"
+                    cols="60"
+                    >{{ request.form['content'] }}</textarea>
+          <br>
+          <br>
+          <br>
+
+          <button type="submit" class="btn btn-success">Submit</button>
+      </form>
+
+</div>
+
+
+<br>
+<br>
+
+{% elif name %}
+
+<br>
+<h4> please upload a tab file having columns the order of specimen_voucher	latitude longitude </h4>
+<h4> please upload a spart text file (optional) </h4>
+
+<div class="container">
+<div class="row mt-4 gx-5">
+<div class="col-md-8">
+  <h6> please upload a  text file </h6>
+
+
+  <form method=post enctype=multipart/form-data action="{{ url_for('blog.upload') }}">
+        <input type="file" name="files[]" multiple="true" autocomplete="off" required>
+        <br>
+        <br>
+
+        <input type=submit class="btn btn-success" value=Submit>
+       </form>
+       </div>
+
+
+ </div>
+ </div>
+
+ <br>
+
+
+
+ {% else %}
+ <br>
+
+ <br>
+
+ {% endif %}
+
+ <div class="container">
+
+
+<h4>Example tab separated table file</h4>
+
+<table style="width:50%">
+  <tr>
+    <th>specimen_voucher</th>
+    <th>latitude</th>
+    <th>longitude</th>
+  </tr>
+  <tr>
+    <td>aura_ZCMV1234</td>
+    <td>-18.840597</td>
+    <td>48.29446319</td>
+  </tr>
+  <tr>
+    <td>aura_ZCMV1235</td>
+    <td>-18.840597</td>
+    <td>48.36801703</td>
+  </tr>
+</table>
+
+<h4>Example paste data format</h4>
+
+<table style="width:50%">
+
+  <tr>
+
+    <td>-18.840597</td>
+    <td>48.29446319</td>
+  </tr>
+  <tr>
+
+    <td>-18.840597</td>
+    <td>48.36801703</td>
+  </tr>
+</table>
+</div>
+
+
+
+</div>
+{% endblock %}

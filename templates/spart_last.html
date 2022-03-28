@@ -1,0 +1,14 @@
+{% extends "spart_base.html" %}
+
+
+{% block content %}
+
+<br>
+<br>
+
+
+<div class="container">
+  <iframe class="responsive-iframe" src="{{ url_for('static', filename='analysis.html') }}" height="500" width="1000" ></iframe>
+</div>
+
+{% endblock %}

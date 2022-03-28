@@ -1,0 +1,68 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>iTaxoTools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/static/css1/custom.css">
+</head>
+
+<header>
+  <div class="container">
+   <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark bg-primary">
+
+           <a class="navbar-brand">
+               <img src="static/images/iTaxoTools Digital linneaeus MICROLOGO.png" width="80" height="60" class="d-inline-block align-top"
+                   alt="">
+                iTaxotools
+
+
+        <a class="nav-link px-lg-5" href="{{ url_for('main.home') }}">
+          <span class="glyphicon glyphicon-home">
+          </span> iTaxatools apps</a>
+
+      </nav>
+    </div>
+
+</header>
+
+<br>
+<br>
+<br>
+
+<body>
+  <div class="container">
+<div class="row justify-content-around">
+<div class="col-4">
+       <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="static/images/DNAconvert.png" alt="Card image cap">
+        <div class="card-body">
+          <p class="card-text">DNA Converter app</p>
+          <a href="{{ url_for('dna.check') }}" class="btn btn-primary">Launch DNAconverter app</a>
+        </div>
+      </div>
+      </div>
+
+<div class="col-4">
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="static/images/Spartmapper.png" alt="Card image cap">
+        <div class="card-body">
+          <p class="card-text">Spartmapper app</p>
+          <a href="{{ url_for('blog.check') }}" class="btn btn-primary">Launch Spartmapper app</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+</body>
+
+</html>

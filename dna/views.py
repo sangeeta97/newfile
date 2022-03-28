@@ -1,33 +1,56 @@
-from dna import app
 from flask import render_template, redirect, url_for, flash, request
 from flask_wtf.file import FileAllowed, FileRequired
 from flask import Flask, send_from_directory, render_template, request, redirect, url_for, g, flash, send_file
 from wtforms.widgets import Input
+from flask import (render_template, url_for, flash,
+                   redirect, request, abort, Blueprint)
 from werkzeug.utils import secure_filename, escape, unescape
 from markupsafe import Markup
 import os
 from collections import defaultdict
 import shutil
-from dna.DNAconvert import *
+from ionos.dna.DNAconvert import *
 
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+dna = Blueprint('dna', __name__)
+
+from ionos import basedir
+
+
+import os
+import zipfile
+
+def zip(src, dst):
+
+    zf = zipfile.ZipFile("%s.zip" % (dst), "w", zipfile.ZIP_DEFLATED)
+    abs_src = os.path.abspath(src)
+    for dirname, subdirs, files in os.walk(src):
+        for filename in files:
+            absname = os.path.abspath(os.path.join(dirname, filename))
+            arcname = absname[len(abs_src) + 1:]
+            zf.write(absname, arcname)
+    zf.close()
 
 context= {'status': False, 'name': False, 'extra': False, 'starting': True}
 options= defaultdict(lambda: None)
 
-@app.route('/download', methods=['GET', 'POST'])
+@dna.route('/dna/download/', methods=['GET', 'POST'])
 def download():
+
     if context['status']:
-        file = os.path.join(app.config['output'], 'result.txt')
-        return send_file(file, as_attachment=True)
+        return send_from_directory(os.path.join(basedir, 'output',), 'result.txt', as_attachment=True, cache_timeout=0)
+
     if context['name']:
-        file = os.path.join(basedir, 'output.zip')
-        return send_file(file, as_attachment=True)
+        return send_from_directory(os.path.join(basedir, 'output',), 'result.zip', as_attachment=True, cache_timeout=0)
 
 
-@app.route('/')
-@app.route('/home', methods=['GET', 'POST'])
+@dna.route('/dna/new/', methods=['GET', 'POST'])
+def logo():
+
+    uploads = os.path.join("static", "images", "DNAconvert.png")
+    return send_file(uploads)
+
+@dna.route('/dna/home/', methods=['GET', 'POST'])
 def check():
     try:
         clear()
@@ -44,15 +67,15 @@ def check():
                 context['status']= True
             if display_type=="upload":
                 context['name']= True
-            return render_template("First.html", context= context, names= context['names'], outputs= context['outputs'], name= context['name'], status= context['status'])
+            return render_template("dna_First.html", context= context, names= context['names'], outputs= context['outputs'], name= context['name'], status= context['status'])
                 # return render(request, "profile_upload1.html", {"formset": formset})
-        return render_template("First.html", context= context, names= context['names'], outputs= context['outputs'], name= context['name'], status= context['status'])
+        return render_template("dna_First.html", context= context, names= context['names'], outputs= context['outputs'], name= context['name'], status= context['status'])
 
     except Exception as e:
         clear()
-        template_name = 'error.html'
+        template_name = 'dna_error.html'
         flash(f'The process failed beacause {e}')
-        return render(request, template_name, context)
+        return render_template("dna_error.html", context= context, names= context['names'], name= context['name'], status= context['status'])
 
 
 def paste_convert(inputdata, outfile_path, informat_name= None, outformat_name= None, disable_automatic_renaming= False, allow_empty_sequences= False):
@@ -64,20 +87,22 @@ def paste_convert(inputdata, outfile_path, informat_name= None, outformat_name= 
 
 
 
-@app.route('/')
-@app.route('/upload', methods=['GET', 'POST'])
+@dna.route('/dna/upload/', methods=['GET', 'POST'])
 def upload():
-    try:
-        if os.path.exists(os.path.join(app.config['output'], 'result.txt')):
-            os.remove(os.path.join(app.config['output'], 'result.txt'))
-        if os.path.exists(os.path.join(basedir, 'output.zip')):
-            os.remove(os.path.join(basedir, 'output.zip'))
 
-        input= os.path.join(app.config['uploads'], 'input')
+    try:
+
+        if os.path.exists(os.path.join(basedir, 'static', 'result.txt')):
+            os.remove(os.path.join(basedir, 'static', 'result.txt'))
+        if os.path.exists(os.path.join(basedir, 'static', 'result.zip')):
+            os.remove(os.path.join(basedir, 'static', 'result.zip'))
+
+
+        input= os.path.join(basedir, 'uploads', 'input')
         if os.path.isdir(input):
             shutil.rmtree(input, ignore_errors=True)
         os.mkdir(input)
-        result= os.path.join(app.config['output'], 'result')
+        result= os.path.join(basedir, 'static', 'result')
         if os.path.isdir(result):
             shutil.rmtree(result, ignore_errors=True)
         os.mkdir(result)
@@ -87,6 +112,8 @@ def upload():
         if request.method == 'POST':
             input_format= request.form['u1']
             output_format= request.form['u2']
+            if not output_format:
+                flash('Please choose output format')
             if request.form.get('u3'):
                 options['allow_empty_sequences'] = True
             if request.form.get('u4'):
@@ -96,7 +123,7 @@ def upload():
                 flash('No file part')
             # check if the post request has the file part
 
-                return redirect("First.html", context, names= context['names'])
+                return redirect("dna_First.html", context, names= context['names'])
             files = request.files.getlist('files[]')
 
         for file in files:
@@ -104,7 +131,7 @@ def upload():
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(input, filename))
 
-        from dna.DNAconvert import convert_wrapper
+
         convert_wrapper(
             input,
             result,
@@ -117,37 +144,42 @@ def upload():
         context['status'] = False
         context['extra'] = True
 
-        template_name = 'last.html'
-        dir_name = os.path.join(app.config['output'], 'result')
-        shutil.make_archive(app.config['output'], 'zip', dir_name)
+        template_name = 'dna_last.html'
+        dir_name = os.path.join(basedir, 'static', 'result')
+        zip(os.path.join(basedir, 'static', 'result'), os.path.join(basedir, 'static', 'result'))
+        down= "/static/result.zip"
+        filen= 'result.zip'
 
 
-        return render_template(template_name, context= context, names= context['names'], name= context['name'], status= context['status'], extra= context['extra'])
+        return render_template(template_name, context= context, names= context['names'], name= context['name'], status= context['status'], extra= context['extra'], down= down, filen= filen)
 
     except Exception as e:
         clear()
         context['status'] = False
         flash(f'The process failed beacause {e}')
-        return render_template('error.html')
+        flash("Please check the input file")
+        return render_template('dna_error.html', context= context, names= context['names'], name= context['name'], status= context['status'], extra= context['extra'])
 
 
 
-@app.route('/')
-@app.route('/paste', methods=['GET', 'POST'])
+@dna.route('/dna/paste/', methods=['GET', 'POST'])
 def paste():
     try:
-        if os.path.exists(os.path.join(app.config['output'], 'result.txt')):
-            os.remove(os.path.join(app.config['output'], 'result.txt'))
-        if os.path.exists(os.path.join(basedir, 'output.zip')):
-            os.remove(os.path.join(basedir, 'output.zip'))
+        if os.path.exists(os.path.join(basedir, 'static', 'result.txt')):
+            os.remove(os.path.join(basedir, 'static', 'result.txt'))
+
         options['allow_empty_sequences'] = False
         options['disable_automatic_renaming'] = False
-        outfile_path = os.path.join(app.config['output'], 'result.txt')
+        outfile_path = os.path.join(basedir, 'static', 'result.txt')
         if request.method == "POST":
             content = request.form['content']
             content= io.StringIO(content)
             input_format= request.form['p1']
             output_format= request.form['p2']
+            if not output_format:
+                flash('Please choose output format')
+            if not input_format:
+                flash('Please choose input format')
             if request.form.get('p3'):
                 options['allow_empty_sequences'] = True
             if request.form.get('p4'):
@@ -157,13 +189,16 @@ def paste():
         context['extra'] = True
         context['status']= True
         template_name= "last.html"
-        return render_template("last.html", context= context, names= context['names'], extra= context['extra'], name= context['name'], status= context['status'])
+        down= "/static/result.txt"
+        filen= 'result.txt'
+        return render_template("dna_last.html", context= context, names= context['names'], extra= context['extra'], name= context['name'], status= context['status'], down= down, filen= filen)
 
     except Exception as e:
         clear()
         context['status'] = False
         flash(f'The process failed beacause {e}')
-        return render_template('error.html')
+        flash("Please check the pasted data")
+        return render_template('dna_error.html', context= context, names= context['names'], name= context['name'], status= context['status'], extra= context['extra'])
 
 
 

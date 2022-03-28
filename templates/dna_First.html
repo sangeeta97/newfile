@@ -1,0 +1,197 @@
+{% extends "dna_base.html" %}
+{% block content %}
+
+<br>
+<br>
+<div class="container">
+
+<h4> DNAconvert is a versatile tool converting among different sequence formats.The tool can be run specifying an input file and a name for the output file.</h4>
+
+<h4>Alternatively the input data can be pasted into the field.</h4>
+
+<h4>Two options can be selected with checkboxes.</h4>
+<p>For details about these option see below</p>
+</div>
+
+<br>
+
+<div class="container">
+<form method = "POST" action="{{ url_for('dna.check') }}">
+
+<label class="custom-control-label" for="customRadio1">Choose to paste Data</label>
+<br>
+<input type="submit" class="btn btn-primary" name="customRadio" value="paste" />
+<br>
+<br>
+<label class="custom-control-label" for="customRadio2">Choose to upload Data</label>
+<br>
+<input type="submit" class="btn btn-primary" name="customRadio" value="upload" />
+
+<br>
+</form>
+</div>
+
+
+{% if status %}
+<div class="container">
+
+  <h6>please paste sequence data</h6>
+
+  <form method="post" enctype=multipart/form-data action="{{ url_for('dna.paste') }}">
+
+          <label for="content">sequence data</label>
+          <br>
+          <textarea name="content"
+                    placeholder="sequence data"
+                    rows="15"
+                    cols="60"
+                    >{{ request.form['content'] }}</textarea>
+          <br>
+          <br>
+          <br>
+          <div class="row row-cols-1 row-cols-lg-2 row-cols-xxl-3 gx-12 gy-0">
+
+           <div class="col-4">
+             <select class="form-select form-select-lg mb-3" name="p1" aria-label="Default select example">
+             <option selected>Please select input file format</option>
+                     {% for name in names %}
+                  <option value="{{ name }}"> {{ name }}</option>
+                    {% endfor %}
+               </select>
+
+              </div>
+
+             <div class="col-4">
+               <select class="form-select form-select-lg mb-3" name="p2" aria-label="Default select example">
+               <option selected>Please select output file format</option>
+                       {% for output in outputs %}
+                    <option value="{{ output }}"> {{ output }}</option>
+                      {% endfor %}
+                 </select>
+                 <br>
+                 <br>
+
+                </div>
+                <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="checked" name="p3">
+            <label class="form-check-label" for="inlineCheckbox1"> Allow empty Sequences </label>
+          </div>
+
+          <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="checked" name="p4">
+      <label class="form-check-label" for="inlineCheckbox1"> Check to disable automatic renaming </label>
+    </div>
+
+                  </div>
+                <br>
+
+
+          <button type="submit" class="btn btn-success">Submit</button>
+      </form>
+
+</div>
+
+
+<br>
+
+{% elif name %}
+
+<br>
+
+
+
+<div class="container">
+<div class="row mt-4 gx-5">
+<div class="col-md-8">
+  <h6> please upload a  text file </h6>
+
+
+  <form method=post enctype=multipart/form-data action="{{ url_for('dna.upload') }}">
+        <input type="file" name="files[]" multiple="true" autocomplete="off" required>
+        <br>
+        <br>
+        <div class="row row-cols-1 row-cols-lg-2 row-cols-xxl-3 gx-12 gy-0">
+
+         <div class="col-6">
+           <select class="form-select form-select-lg mb-3" name="u1" aria-label="Default select example">
+           <option selected>Please select input file format</option>
+                   {% for name in names %}
+                <option value="{{ name }}"> {{ name }}</option>
+                  {% endfor %}
+             </select>
+
+            </div>
+
+
+
+           <div class="col-6">
+             <select class="form-select form-select-lg mb-3" name="u2" aria-label="Default select example">
+             <option selected>Please select output file format</option>
+                     {% for output in outputs %}
+                  <option value="{{ output }}"> {{ output }}</option>
+                    {% endfor %}
+               </select>
+               <br>
+               <br>
+
+              </div>
+
+              <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="checked" name="u3">
+          <label class="form-check-label" for="inlineCheckbox1"> Allow empty Sequences </label>
+        </div>
+
+        <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="checked" name="u4">
+    <label class="form-check-label" for="inlineCheckbox1"> Check to disable automatic renaming </label>
+  </div>
+
+                </div>
+              <br>
+
+
+        <input type=submit class="btn btn-success" value=Submit>
+      </form>
+      </div>
+
+
+</div>
+</div>
+
+<br>
+
+
+
+{% else %}
+<br>
+
+<br>
+
+{% endif %}
+
+<div class="container">
+
+<h4>Optional details</h4>
+
+Firstly, the option "Allow empty sequences" will also translate empty sequences,
+that is, sequence names followed by no sequence will be included in the converted file.
+By default such empty sequences will be ignored and not included in the converted file.
+
+Secondly, by default the program will apply an automated renaming of sequences when these are converted into formats
+such as Philip or Nexus where a limit to the numbers of characters in sequence names are applied.
+Specifically, long sequence names will be cut to a certain length,
+and the last characters will be replaced by a continuous numbering.
+This guarantees unique sequence names which are required by many analysis programs,
+but may lead to "mutilation" of sequence names that are to be conserved.
+The respective checkbox disables the automated sequence renaming.
+
+</div>
+<div>
+{% for message in get_flashed_messages() %}
+
+    <li>{{ message }}</li>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
